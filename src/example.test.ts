@@ -42,6 +42,5 @@ test('basic CRUD example', async () => {
   orm.em.clear();
 
   const user = await orm.em.findOneOrFail(User, { email: 'foo' });
-  expect(user.name).toBeNull();
   expect(user.name).toBe('Foo');
 });
