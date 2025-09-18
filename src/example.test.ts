@@ -6,7 +6,7 @@ class User {
   @PrimaryKey()
   id!: number;
 
-  @Property()
+  @Property({ name: 'name_tmp' })
   name: string;
 
   @Property({ unique: true })
@@ -29,6 +29,7 @@ beforeAll(async () => {
     allowGlobalContext: true, // only for testing
   });
   await orm.schema.refreshDatabase();
+  await orm.em.execute('alter table "user" add column name text');
 });
 
 afterAll(async () => {
@@ -42,10 +43,4 @@ test('basic CRUD example', async () => {
 
   const user = await orm.em.findOneOrFail(User, { email: 'foo' });
   expect(user.name).toBe('Foo');
-  user.name = 'Bar';
-  orm.em.remove(user);
-  await orm.em.flush();
-
-  const count = await orm.em.count(User, { email: 'foo' });
-  expect(count).toBe(0);
 });
